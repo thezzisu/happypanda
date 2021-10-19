@@ -1,0 +1,1 @@
+export { getGalleryInfo } from './gallery'
