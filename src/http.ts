@@ -1,5 +1,9 @@
 import got from 'got'
 import ProxyAgent from 'proxy-agent'
+import { promisify } from 'util'
+import * as stream from 'stream'
+import { createWriteStream } from 'fs'
+const pipeline = promisify(stream.pipeline)
 
 export const agent = new ProxyAgent()
 
@@ -15,3 +19,10 @@ export const http = got.extend({
     Cookie
   }
 })
+
+export async function download(url: string, dist: string) {
+  console.log(`Downloading ${url} to ${dist}`)
+  const downloadStream = http.stream(url)
+  const writeStream = createWriteStream(dist)
+  await pipeline(downloadStream, writeStream)
+}

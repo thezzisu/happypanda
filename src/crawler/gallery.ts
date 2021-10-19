@@ -97,6 +97,7 @@ export async function getGalleryInfo(
 export interface IGalleryPageInfo {
   filename: string
   imageUrl: string
+  originalUrl: string
 }
 
 export async function getGalleryPageInfo(
@@ -106,8 +107,10 @@ export async function getGalleryPageInfo(
   const $ = cheerio.load(body)
   const filename = $('#i2').children().last().text().split('::')[0].trim()
   const imageUrl = $('#i3').children().children().first().attr('src')!
+  const originalUrl = $('#i7').children('a').attr('href')!
   return {
     filename,
-    imageUrl
+    imageUrl,
+    originalUrl
   }
 }
