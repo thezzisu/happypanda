@@ -18,3 +18,19 @@ export async function retry<T>(
   }
   throw lasterr
 }
+
+export class AsyncQueue {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  #last: Promise<any> = Promise.resolve()
+
+  async exec<T>(factory: () => Promise<T>): Promise<T> {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return (this.#last = this.#last.catch(() => {}).then(factory))
+  }
+}
+
+const queue = new AsyncQueue()
+
+export async function queued<T>(factory: () => Promise<T>): Promise<T> {
+  return queue.exec(factory)
+}

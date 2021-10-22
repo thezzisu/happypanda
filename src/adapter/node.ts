@@ -6,7 +6,7 @@ import { createWriteStream } from 'fs'
 import { Adapter } from './base'
 import { writeFile } from 'fs/promises'
 import { createLogger } from '../util/logger'
-import { retry } from '../util/async'
+import { queued, retry } from '../util/async'
 
 const log = createLogger('adapter:node')
 
@@ -31,7 +31,7 @@ export class NodeAdapter extends Adapter {
     return res.body
   }
   async get(url: string) {
-    return await retry(() => this.#get(url))
+    return await retry(() => queued(() => this.#get(url)))
   }
 
   async #download(url: string, dist: string) {
@@ -41,7 +41,7 @@ export class NodeAdapter extends Adapter {
     await pipeline(downloadStream, writeStream)
   }
   async download(url: string, dist: string) {
-    await retry(() => this.#download(url, dist))
+    return await retry(() => queued(() => this.#download(url, dist)))
   }
   async write(content: string, dist: string) {
     await writeFile(dist, content)

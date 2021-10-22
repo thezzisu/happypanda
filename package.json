@@ -1,6 +1,6 @@
 {
   "name": "happypanda",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A crawler for E-Hentai galleries",
   "main": "lib/index.js",
   "repository": "git@github.com:thezzisu/happypanda.git",
