@@ -21,12 +21,12 @@ export class Downloader {
 
   async downloadGallery(gallery: IGallery, dist: string, original?: boolean) {
     log(`Downloading ${gallery.title} to ${dist}`)
-    for (const page of gallery.pages) {
-      await this.downloadPage(page, dist + '/' + page.filename, original)
-    }
     await this.crawler.adapter.write(
       JSON.stringify(gallery, null, '  '),
       dist + '/gallery.json'
     )
+    for (const page of gallery.pages) {
+      await this.downloadPage(page, dist + '/' + page.filename, original)
+    }
   }
 }
