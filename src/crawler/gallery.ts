@@ -8,9 +8,9 @@ const log = createLogger('gallery')
 export interface IGalleryPage {
   url: string
   thumbnailUrl: string
-  filename: string
-  imageUrl: string
-  originalUrl: string
+  filename?: string
+  imageUrl?: string
+  originalUrl?: string
 }
 
 export interface IGallery {
@@ -78,7 +78,7 @@ export class GalleryCrawler {
       .reduce((acc, cur) => acc.concat(cur), [])
   }
 
-  private async getPage(galleryPageUrl: string) {
+  async getPage(galleryPageUrl: string) {
     log(`Fetch Page url = ${galleryPageUrl}`)
     const body = await this.crawler.adapter.get(galleryPageUrl)
     const $ = cheerio.load(body)
@@ -92,14 +92,11 @@ export class GalleryCrawler {
     }
   }
 
-  private async getPages($: CheerioAPI) {
-    log(`Fetch Pages count = ${this.extractPages($).length}`)
-    return Promise.all(
-      this.extractPages($).map(async (value) => ({
-        ...value,
-        ...(await this.getPage(value.url))
-      }))
-    )
+  async completePage(page: IGalleryPage): Promise<Required<IGalleryPage>> {
+    return {
+      ...page,
+      ...(await this.getPage(page.url))
+    }
   }
 
   async getGallery(galleryUrl: string): Promise<IGallery> {
@@ -110,12 +107,12 @@ export class GalleryCrawler {
 
     const count = this.extractPaginationCount($)
     log(`Pagination count = ${count}`)
-    const pages = await this.getPages($)
+    const pages = this.extractPages($)
     for (let i = 1; i <= count; i++) {
       const url = `${galleryUrl}?inline_set=ts_l&p=${i}`
       const body = await this.crawler.adapter.get(url)
       const $ = cheerio.load(body)
-      pages.push(...(await this.getPages($)))
+      pages.push(...this.extractPages($))
     }
 
     const tags = this.extractTags($)

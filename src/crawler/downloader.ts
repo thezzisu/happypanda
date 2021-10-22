@@ -8,13 +8,14 @@ export class Downloader {
   constructor(public crawler: Crawler) {}
 
   async downloadPage(page: IGalleryPage, dist: string, original?: boolean) {
+    const complete = await this.crawler.gallery.completePage(page)
     log(`Downloading ${page.url} to ${dist}`)
     if (original && !page.originalUrl) {
       log(`Orignial image for ${page.url} is not avaliable!`)
       original = false
     }
     await this.crawler.adapter.download(
-      original ? page.originalUrl : page.imageUrl,
+      original ? complete.originalUrl : complete.imageUrl,
       dist
     )
   }
