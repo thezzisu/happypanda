@@ -4,6 +4,10 @@ import { promisify } from 'util'
 import * as stream from 'stream'
 import { createWriteStream } from 'fs'
 import { Adapter } from './base'
+import { writeFile } from 'fs/promises'
+import { createLogger } from '../util/logger'
+
+const log = createLogger('adapter:node')
 
 const pipeline = promisify(stream.pipeline)
 const agent = new ProxyAgent()
@@ -25,10 +29,14 @@ export class NodeAdapter extends Adapter {
     const res = await http.get(url)
     return res.body
   }
+
   async download(url: string, dist: string) {
-    console.log(`Downloading ${url} to ${dist}`)
+    log(`Downloading ${url} to ${dist}`)
     const downloadStream = http.stream(url)
     const writeStream = createWriteStream(dist)
     await pipeline(downloadStream, writeStream)
+  }
+  async write(content: string, dist: string) {
+    await writeFile(dist, content)
   }
 }
