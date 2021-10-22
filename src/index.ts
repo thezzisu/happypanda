@@ -1,16 +1,14 @@
+import { NodeAdapter } from './adapter'
+import { Crawler } from './crawler'
 import './preload'
-import { getGalleryInfo } from './crawler'
-import { getGalleryPageInfo } from './crawler/gallery'
-import { download } from './http'
 
 async function main() {
-  const info = await getGalleryInfo(
+  const crawler = new Crawler(new NodeAdapter())
+  const gallery = await crawler.gallery.getGallery(
     'https://e-hentai.org/g/1991643/100fb249d9/'
   )
-  console.log(info)
-  const page = await getGalleryPageInfo(info.pages[0].url)
-  console.log(page)
-  await download(page.originalUrl, page.filename)
+  console.log(gallery)
+  await crawler.downloader.downloadGallery(gallery, '../temp')
 }
 
 main()

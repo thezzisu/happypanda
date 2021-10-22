@@ -1,1 +1,1 @@
-export { getGalleryInfo } from './gallery'
+export { Crawler } from './crawler'
