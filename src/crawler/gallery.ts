@@ -103,7 +103,7 @@ export class GalleryCrawler {
   }
 
   async getGallery(galleryUrl: string): Promise<IGallery> {
-    const body = await this.crawler.adapter.get(galleryUrl)
+    const body = await this.crawler.adapter.get(galleryUrl + '?inline_set=ts_l')
     const $ = cheerio.load(body)
     const [title, titleJpn] = this.extractTitle($)
     const thumbnailUrl = this.extractThumbnail($)
@@ -112,7 +112,7 @@ export class GalleryCrawler {
     log(`Pagination count = ${count}`)
     const pages = await this.getPages($)
     for (let i = 1; i <= count; i++) {
-      const url = `${galleryUrl}?p=${i}`
+      const url = `${galleryUrl}?inline_set=ts_l&p=${i}`
       const body = await this.crawler.adapter.get(url)
       const $ = cheerio.load(body)
       pages.push(...(await this.getPages($)))
