@@ -1,7 +1,6 @@
 import { IGallery, IGalleryPage } from './gallery'
 import type { Crawler } from './crawler'
 import { createLogger } from '../util/logger'
-import { retry } from '../util/async'
 
 const log = createLogger('downloader')
 
@@ -14,11 +13,9 @@ export class Downloader {
       log(`Orignial image for ${page.url} is not avaliable!`)
       original = false
     }
-    await retry(() =>
-      this.crawler.adapter.download(
-        original ? page.originalUrl : page.imageUrl,
-        dist
-      )
+    await this.crawler.adapter.download(
+      original ? page.originalUrl : page.imageUrl,
+      dist
     )
   }
 

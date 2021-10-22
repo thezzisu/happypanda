@@ -14,6 +14,7 @@ export interface IGalleryPage {
 }
 
 export interface IGallery {
+  url: string
   thumbnailUrl: string
   title: string
   titleJpn: string
@@ -117,6 +118,7 @@ export class GalleryCrawler {
 
     const tags = this.extractTags($)
     return {
+      url: galleryUrl,
       thumbnailUrl,
       title,
       titleJpn,
