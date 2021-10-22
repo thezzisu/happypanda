@@ -79,6 +79,7 @@ export class GalleryCrawler {
   }
 
   private async getPage(galleryPageUrl: string) {
+    log(`Fetch Page url = ${galleryPageUrl}`)
     const body = await this.crawler.adapter.get(galleryPageUrl)
     const $ = cheerio.load(body)
     const filename = $('#i2').children().last().text().split('::')[0].trim()
@@ -92,7 +93,7 @@ export class GalleryCrawler {
   }
 
   private async getPages($: CheerioAPI) {
-    log(`Total pages = ${this.extractPages($).length}`)
+    log(`Fetch Pages count = ${this.extractPages($).length}`)
     return Promise.all(
       this.extractPages($).map(async (value) => ({
         ...value,
@@ -108,6 +109,7 @@ export class GalleryCrawler {
     const thumbnailUrl = this.extractThumbnail($)
 
     const count = this.extractPaginationCount($)
+    log(`Pagination count = ${count}`)
     const pages = await this.getPages($)
     for (let i = 1; i <= count; i++) {
       const url = `${galleryUrl}?p=${i}`
