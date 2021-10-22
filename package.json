@@ -1,6 +1,6 @@
 {
   "name": "happypanda",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A crawler for E-Hentai galleries",
   "main": "lib/index.js",
   "repository": "git@github.com:thezzisu/happypanda.git",
@@ -21,7 +21,7 @@
     "lint:fix": "eslint --fix . && prettier --write .",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "prepack": "build"
+    "prepack": "tsc"
   },
   "dependencies": {
     "cac": "^6.7.11",
